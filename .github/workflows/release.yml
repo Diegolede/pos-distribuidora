@@ -1,0 +1,127 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev \
+            libgtk-3-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev \
+            patchelf
+
+      - name: Install frontend dependencies
+        run: |
+          cd crates/pos-desktop/ui
+          npm install
+
+      - name: Build frontend
+        run: |
+          cd crates/pos-desktop/ui
+          npm run build
+
+      - name: Install Tauri CLI
+        run: cargo install tauri-cli --version ^2.0
+
+      - name: Build Tauri app
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        run: |
+          cd crates/pos-desktop
+          cargo tauri build
+
+      - name: Get version from tag
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: Upload AppImage
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./crates/pos-desktop/target/release/bundle/appimage/pos-desktop_${{ steps.get_version.outputs.VERSION }}_amd64.AppImage
+          asset_name: pos-desktop_${{ steps.get_version.outputs.VERSION }}_amd64.AppImage
+          asset_content_type: application/octet-stream
+
+      - name: Upload AppImage signature
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./crates/pos-desktop/target/release/bundle/appimage/pos-desktop_${{ steps.get_version.outputs.VERSION }}_amd64.AppImage.sig
+          asset_name: pos-desktop_${{ steps.get_version.outputs.VERSION }}_amd64.AppImage.sig
+          asset_content_type: text/plain
+
+      - name: Upload DEB
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./crates/pos-desktop/target/release/bundle/deb/pos-distribuidora_${{ steps.get_version.outputs.VERSION }}_amd64.deb
+          asset_name: pos-distribuidora_${{ steps.get_version.outputs.VERSION }}_amd64.deb
+          asset_content_type: application/octet-stream
+
+      - name: Generate latest.json
+        run: |
+          cat > latest.json << EOF
+          {
+            "version": "v${{ steps.get_version.outputs.VERSION }}",
+            "notes": "Release ${{ steps.get_version.outputs.VERSION }}",
+            "pub_date": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "platforms": {
+              "linux-x86_64": {
+                "signature": "$(cat ./crates/pos-desktop/target/release/bundle/appimage/pos-desktop_${{ steps.get_version.outputs.VERSION }}_amd64.AppImage.sig)",
+                "url": "https://github.com/Diegolede/pos-distribuidora/releases/download/v${{ steps.get_version.outputs.VERSION }}/pos-desktop_${{ steps.get_version.outputs.VERSION }}_amd64.AppImage"
+              }
+            }
+          }
+          EOF
+
+      - name: Upload latest.json
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./latest.json
+          asset_name: latest.json
+          asset_content_type: application/json
