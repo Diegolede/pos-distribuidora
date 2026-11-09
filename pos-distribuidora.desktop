@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=POS Distribuidora
+Comment=Sistema de Punto de Venta para distribuidoras
+Comment[es]=Sistema de Punto de Venta para distribuidoras
+Exec=pos-distribuidora %U
+Icon=pos-distribuidora
+Terminal=false
+Categories=Office;Finance;
+Keywords=pos;ventas;distribuidora;inventario;
+StartupNotify=true
+StartupWMClass=pos-distribuidora

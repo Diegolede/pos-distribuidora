@@ -1,0 +1,47 @@
+[workspace]
+members = [
+    "crates/pos-core",
+    "crates/pos-db",
+    "crates/pos-catalog",
+    "crates/pos-cart",
+    "crates/pos-sales",
+    "crates/pos-printer",
+    "crates/pos-updater",
+    "crates/pos-desktop",
+]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+authors = ["POS Team"]
+license = "MIT"
+
+[workspace.dependencies]
+pos-core = { path = "crates/pos-core" }
+pos-db = { path = "crates/pos-db" }
+pos-catalog = { path = "crates/pos-catalog" }
+pos-cart = { path = "crates/pos-cart" }
+pos-sales = { path = "crates/pos-sales" }
+pos-printer = { path = "crates/pos-printer" }
+pos-updater = { path = "crates/pos-updater" }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+thiserror = "2.0"
+anyhow = "1.0"
+chrono = { version = "0.4", features = ["serde"] }
+tracing = "0.1"
+calamine = "0.38"
+tokio = { version = "1.0", features = ["full"] }
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+rusqlite = { version = "0.31", features = ["bundled"] }
+criterion = { version = "0.5", features = ["html_reports"] }
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+strip = true
+
+[profile.bench]
+inherits = "release"

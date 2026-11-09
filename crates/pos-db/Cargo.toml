@@ -1,0 +1,26 @@
+[package]
+name = "pos-db"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+pos-core = { workspace = true }
+rusqlite = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+chrono = { workspace = true }
+tracing = { workspace = true }
+rust_decimal = "1.37"
+
+[dev-dependencies]
+rust_decimal_macros = "1.37"
+criterion = { workspace = true }
+pos-catalog = { workspace = true }
+pos-cart = { workspace = true }
+
+[[bench]]
+name = "db_performance"
+harness = false

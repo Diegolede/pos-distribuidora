@@ -1,0 +1,34 @@
+{
+  "name": "ui",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@tanstack/react-virtual": "^3.14.26",
+    "lucide-react": "^1.70.0",
+    "puppeteer": "^25.16.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "zustand": "^5.1.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.3.0",
+    "autoprefixer": "^10.6.2",
+    "esbuild": "^0.28.2",
+    "postcss": "^8.5.32",
+    "tailwindcss": "^3.4.19",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.7"
+  }
+}

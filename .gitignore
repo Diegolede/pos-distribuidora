@@ -1,0 +1,45 @@
+# Build artifacts
+target/
+dist/
+node_modules/
+*.log
+
+# Database files (no subir DBs con datos reales)
+*.db
+*.sqlite
+*.sqlite3
+
+# Excel files del cliente (NO subir)
+uploads/
+catalogo.xlsx
+catalogo_*.xlsx
+!plantilla_catalogo.xlsx
+
+# Claves de firma (NUNCA subir)
+*.key
+*.pem
+*.p12
+*.pfx
+updater-key.txt
+private-key.txt
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporal
+tmp/
+temp/
+*.tmp

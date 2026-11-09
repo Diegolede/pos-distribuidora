@@ -1,0 +1,16 @@
+[package]
+name = "pos-sales"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+pos-core = { workspace = true }
+pos-db = { workspace = true }
+serde = { workspace = true }
+chrono = { workspace = true }
+thiserror = { workspace = true }
+rusqlite = { workspace = true }
+rust_decimal = "1.37"
+chrono-tz = "0.10"
