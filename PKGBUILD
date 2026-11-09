@@ -9,7 +9,7 @@ license=('MIT')
 depends=('webkit2gtk' 'gtk3' 'libappindicator-gtk3')
 provides=('pos-distribuidora')
 conflicts=('pos-distribuidora')
-source=("https://github.com/Diegolede/pos-distribuidora/releases/download/v${pkgver}/pos-desktop_${pkgver}_amd64.AppImage"
+source=("https://github.com/Diegolede/pos-distribuidora/releases/download/v${pkgver}/pos-distribuidora_${pkgver}_amd64.AppImage"
         "pos-distribuidora.desktop"
         "pos-distribuidora.png")
 sha256sums=('SKIP'  # Se actualizará con el hash real de la release
@@ -18,8 +18,8 @@ sha256sums=('SKIP'  # Se actualizará con el hash real de la release
 options=('!strip')
 
 prepare() {
-    chmod +x "pos-desktop_${pkgver}_amd64.AppImage"
-    ".pos-desktop_${pkgver}_amd64.AppImage" --appimage-extract > /dev/null 2>&1 || true
+    chmod +x "pos-distribuidora_${pkgver}_amd64.AppImage"
+    "./pos-distribuidora_${pkgver}_amd64.AppImage" --appimage-extract > /dev/null 2>&1 || true
 }
 
 package() {

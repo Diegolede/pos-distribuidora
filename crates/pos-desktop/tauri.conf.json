@@ -1,5 +1,5 @@
 {
-  "productName": "POS Distribuidora",
+  "productName": "pos-distribuidora",
   "version": "0.1.0",
   "identifier": "com.distribuidora.pos",
   "build": {
@@ -10,6 +10,7 @@
   },
   "bundle": {
     "active": true,
+    "createUpdaterArtifacts": true,
     "targets": [
       "appimage",
       "deb"
