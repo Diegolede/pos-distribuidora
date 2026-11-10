@@ -1,4 +1,4 @@
-import type { Product, Cart, Sale, MonthlySummary } from './types';
+import type { Product, Cart, Sale, MonthlySummary, ImportPreview } from './types';
 
 declare global {
   interface Window {
@@ -80,5 +80,13 @@ export const api = {
 
   async resetAllToDefault(): Promise<Cart> {
     return invoke('reset_all_to_default');
+  },
+
+  async importExcelPreview(filePath: string, sheetName: string, headerRow: number): Promise<ImportPreview> {
+    return invoke('import_excel_preview', { filePath, sheetName, headerRow });
+  },
+
+  async importExcel(filePath: string, sheetName: string, headerRow: number): Promise<ImportPreview> {
+    return invoke('import_excel', { filePath, sheetName, headerRow });
   },
 };

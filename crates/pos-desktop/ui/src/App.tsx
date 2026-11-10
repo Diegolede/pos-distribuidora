@@ -24,6 +24,7 @@ function App() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [categories, setCategories] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('Efectivo');
   const [cashReceived, setCashReceived] = useState('');
@@ -78,11 +79,22 @@ function App() {
   const loadProducts = async () => {
     try {
       setLoading(true);
-      const prods = await api.getProducts(5000);
+      setError(null);
+      
+      const timeoutPromise = new Promise<never>((_, reject) => 
+        setTimeout(() => reject(new Error('Timeout: El comando tardó demasiado')), 10000)
+      );
+      
+      const prods = await Promise.race([
+        api.getProducts(5000),
+        timeoutPromise
+      ]);
+      
       setAllProducts(prods);
       setProducts(prods);
     } catch (error) {
       console.error('Error al cargar productos:', error);
+      setError(error instanceof Error ? error.message : String(error));
     } finally {
       setLoading(false);
     }
@@ -109,19 +121,25 @@ function App() {
   const handleSearch = async () => {
     try {
       setLoading(true);
+      setError(null);
       if (!searchQuery.trim() && !selectedCategory) {
         setProducts(allProducts);
         return;
       }
       
-      const results = await api.searchProducts(
-        searchQuery.trim(),
-        selectedCategory || undefined,
-        500
+      const timeoutPromise = new Promise<never>((_, reject) => 
+        setTimeout(() => reject(new Error('Timeout en búsqueda')), 10000)
       );
+      
+      const results = await Promise.race([
+        api.searchProducts(searchQuery.trim(), selectedCategory || undefined, 500),
+        timeoutPromise
+      ]);
+      
       setProducts(results);
     } catch (error) {
       console.error('Error en búsqueda:', error);
+      setError(error instanceof Error ? error.message : String(error));
     } finally {
       setLoading(false);
     }
@@ -286,6 +304,34 @@ function App() {
               {loading ? (
                 <div className="loading-state">
                   <div className="spinner" />
+                </div>
+              ) : error ? (
+                <div className="empty-state">
+                  <div className="empty-icon" style={{ color: '#ef4444' }}>⚠️</div>
+                  <div className="empty-title">Error al cargar productos</div>
+                  <div className="empty-description">{error}</div>
+                  <button 
+                    className="btn-primary" 
+                    onClick={() => loadProducts()}
+                    style={{ marginTop: '16px' }}
+                  >
+                    Reintentar
+                  </button>
+                </div>
+              ) : products.length === 0 && allProducts.length === 0 ? (
+                <div className="empty-state">
+                  <Search className="empty-icon" size={48} />
+                  <div className="empty-title">No hay productos cargados</div>
+                  <div className="empty-description">
+                    Importa tu catálogo desde un archivo Excel para comenzar
+                  </div>
+                  <button 
+                    className="btn-primary" 
+                    onClick={() => setView('import')}
+                    style={{ marginTop: '16px' }}
+                  >
+                    Importar catálogo desde Excel
+                  </button>
                 </div>
               ) : products.length === 0 ? (
                 <div className="empty-state">

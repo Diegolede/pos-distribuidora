@@ -71,3 +71,20 @@ export interface MonthlySummary {
   card_total: Money;
   transfer_total: Money;
 }
+
+export interface ImportPreview {
+  total_rows: number;
+  valid_rows: number;
+  new_products: number;
+  updates: number;
+  errors: ImportError[];
+  calculated_professional_prices: number;
+  calculated_public_prices: number;
+  products_without_prices: number;
+}
+
+export interface ImportError {
+  row: number;
+  column: string | null;
+  message: string;
+}

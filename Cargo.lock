@@ -2980,7 +2980,7 @@ dependencies = [
 
 [[package]]
 name = "pos-cart"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "chrono",
  "criterion",
@@ -2995,7 +2995,7 @@ dependencies = [
 
 [[package]]
 name = "pos-catalog"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "calamine",
  "chrono",
@@ -3013,7 +3013,7 @@ dependencies = [
 
 [[package]]
 name = "pos-core"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "anyhow",
  "chrono",
@@ -3026,7 +3026,7 @@ dependencies = [
 
 [[package]]
 name = "pos-db"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "chrono",
  "criterion",
@@ -3044,7 +3044,7 @@ dependencies = [
 
 [[package]]
 name = "pos-desktop"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "anyhow",
  "chrono",
@@ -3072,7 +3072,7 @@ dependencies = [
 
 [[package]]
 name = "pos-printer"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "chrono",
  "pos-core",
@@ -3082,7 +3082,7 @@ dependencies = [
 
 [[package]]
 name = "pos-sales"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "chrono",
  "chrono-tz",
@@ -3096,7 +3096,7 @@ dependencies = [
 
 [[package]]
 name = "pos-updater"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "ed25519-dalek",
  "hex",

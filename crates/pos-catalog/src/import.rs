@@ -229,7 +229,7 @@ impl ExcelImporter {
         })
     }
 
-    fn is_empty_row(row: &RawProductRow) -> bool {
+    pub fn is_empty_row(row: &RawProductRow) -> bool {
         row.name.is_none()
             && row.price_professional.is_none()
             && row.price_public.is_none()
@@ -375,7 +375,7 @@ impl ExcelImporter {
         .unwrap_or(Decimal::from(30))
     }
 
-    fn validate_row(&self, row: &RawProductRow) -> Result<Product, Error> {
+    pub fn validate_row(&self, row: &RawProductRow) -> Result<Product, Error> {
         let name = row.name.as_ref().ok_or_else(|| {
             Error::Validation(format!("Fila {}: falta el nombre", row.row_number))
         })?.clone();
@@ -419,7 +419,7 @@ impl ExcelImporter {
     }
 
     /// Calcular precios faltantes usando el markup configurado
-    fn calculate_missing_prices(&self, product: &mut Product, db: &Database) {
+    pub fn calculate_missing_prices(&self, product: &mut Product, db: &Database) {
         let markup_percent = self.get_markup_percentage(db);
         let markup_multiplier = Decimal::ONE + (markup_percent / Decimal::from(100));
 

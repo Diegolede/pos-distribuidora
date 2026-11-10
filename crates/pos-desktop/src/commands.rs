@@ -1,6 +1,6 @@
 use crate::state::AppState;
 use pos_cart::Cart;
-use pos_catalog::{generate_test_products, ExcelImporter};
+use pos_catalog::{generate_test_products, ExcelImporter, OptimizedImporter};
 use pos_core::{
     CartItem, CompanyInfo, Error, ImportPreview, Money, MonthlySummary, PaymentMethod, PriceType,
     Product, ProductId, Sale,
@@ -9,7 +9,7 @@ use pos_printer::{save_ticket_to_file, TicketFormatter, TicketWidth};
 use rust_decimal::Decimal;
 use std::str::FromStr;
 use std::sync::Arc;
-use tauri::State;
+use tauri::{AppHandle, Emitter, State};
 
 #[tauri::command]
 pub fn get_products(
@@ -54,16 +54,40 @@ pub fn import_excel_preview(
 }
 
 #[tauri::command]
-pub fn import_excel(
-    state: State<Arc<AppState>>,
+pub async fn import_excel(
+    app: AppHandle,
+    state: State<'_, Arc<AppState>>,
     file_path: String,
     sheet_name: String,
     header_row: usize,
 ) -> Result<ImportPreview, String> {
-    let importer = ExcelImporter::open(&file_path).map_err(|e| e.to_string())?;
-    importer
-        .import_products(&sheet_name, header_row, &state.db)
-        .map_err(|e| e.to_string())
+    let db = state.db.clone();
+    
+    // Ejecutar importación en hilo bloqueante para no congelar la UI
+    let result = tauri::async_runtime::spawn_blocking(move || {
+        let importer = ExcelImporter::open(&file_path).map_err(|e| e.to_string())?;
+        let optimized = OptimizedImporter::new(importer);
+        
+        // Emitir eventos de progreso cada N filas
+        let result = optimized.import_products_optimized(
+            &sheet_name,
+            header_row,
+            &db,
+            |current, total| {
+                let _ = app.emit("import-progress", serde_json::json!({
+                    "current": current,
+                    "total": total,
+                    "percent": if total > 0 { (current * 100) / total } else { 0 }
+                }));
+            },
+        );
+        
+        result.map_err(|e| e.to_string())
+    })
+    .await
+    .map_err(|e| format!("Error en spawn: {}", e))??;
+    
+    Ok(result)
 }
 
 #[tauri::command]

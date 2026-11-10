@@ -1,6 +1,6 @@
 {
   "productName": "pos-distribuidora",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "identifier": "com.distribuidora.pos",
   "build": {
     "beforeDevCommand": "cd ui && npm run dev",
