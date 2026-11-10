@@ -39,6 +39,11 @@ jobs:
           cd crates/pos-desktop/ui
           npm install
 
+      - name: Build frontend
+        run: |
+          cd crates/pos-desktop/ui
+          npm run build
+
       - name: Build and Release
         uses: tauri-apps/tauri-action@v0
         env:

@@ -1,11 +1,11 @@
 {
   "productName": "pos-distribuidora",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "identifier": "com.distribuidora.pos",
   "build": {
     "beforeDevCommand": "cd ui && npm run dev",
     "devUrl": "http://localhost:43125",
-    "beforeBuildCommand": "",
+    "beforeBuildCommand": "npm run build",
     "frontendDist": "ui/dist"
   },
   "bundle": {

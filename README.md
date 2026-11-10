@@ -242,6 +242,40 @@ Las contribuciones son bienvenidas! Por favor:
 4. Push a la rama (`git push origin feature/AmazingFeature`)
 5. Abre un Pull Request
 
+## 🔧 Solución de Problemas
+
+### Ventana en blanco en Wayland/Hyprland (GPUs NVIDIA)
+
+Si la aplicación se abre pero muestra una ventana completamente en blanco, especialmente en entornos Wayland como Hyprland con tarjetas NVIDIA, la aplicación aplica automáticamente los siguientes workarounds:
+
+- `WEBKIT_DISABLE_DMABUF_RENDERER=1` - Deshabilita el renderizador DMA-BUF
+- `WEBKIT_DISABLE_COMPOSITING_MODE=1` - Deshabilita el modo compositing en Wayland
+
+Estos valores se configuran automáticamente al iniciar la aplicación si no están definidos previamente. Si el problema persiste, puedes exportar manualmente estas variables antes de ejecutar:
+
+```bash
+export WEBKIT_DISABLE_DMABUF_RENDERER=1
+export WEBKIT_DISABLE_COMPOSITING_MODE=1
+./pos-distribuidora
+```
+
+### Error Boundary visible
+
+Si ves una pantalla roja con un mensaje de error, la aplicación ha capturado un problema inesperado. Posibles soluciones:
+
+1. Hacer clic en "Recargar aplicación" para reintentar
+2. Verificar que la base de datos SQLite no esté corrupta
+3. Verificar los permisos de escritura en `~/.local/share/pos-distribuidora/`
+4. Revisar los logs en la consola del sistema
+
+### Frontend no se carga
+
+Si tras compilar la aplicación el frontend no se carga, asegúrate de:
+
+1. Haber compilado el frontend antes: `cd crates/pos-desktop/ui && npm run build`
+2. Verificar que existe el directorio `crates/pos-desktop/ui/dist/` con los assets JS
+3. El `beforeBuildCommand` en `tauri.conf.json` debe estar configurado correctamente
+
 ## 📞 Soporte
 
 Para reportar bugs o sugerir mejoras, abre un issue en GitHub.

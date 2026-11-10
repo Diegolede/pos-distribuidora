@@ -16,6 +16,19 @@ fn main() {
         )
         .init();
 
+    // Workaround para WebKitGTK en Wayland/Hyprland con GPUs NVIDIA
+    // Previene ventanas en blanco causadas por problemas de renderizado
+    if std::env::var("WEBKIT_DISABLE_DMABUF_RENDERER").is_err() {
+        std::env::set_var("WEBKIT_DISABLE_DMABUF_RENDERER", "1");
+    }
+    
+    // En Wayland, deshabilitar el modo compositing también puede ayudar
+    if std::env::var("WAYLAND_DISPLAY").is_ok() 
+        && std::env::var("WEBKIT_DISABLE_COMPOSITING_MODE").is_err() 
+    {
+        std::env::set_var("WEBKIT_DISABLE_COMPOSITING_MODE", "1");
+    }
+
     let state = Arc::new(AppState::new().expect("Error al inicializar la aplicación"));
 
     tauri::Builder::default()
